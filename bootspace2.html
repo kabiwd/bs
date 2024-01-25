@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f1dcbb;
+            color: #333;
+            transition: background-color 0.5s ease;
+        }
+
+        h1 {
+            color: #009688;
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+            transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.5s ease;
+        }
+
+        form:hover {
+            background-color: #f0f8ff; /* Light Blue background on hover */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        fieldset {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: none; /* Initially hide the output */
+            transition: border-color 0.3s ease, display 0.5s ease;
+        }
+
+        #output h2 {
+            color: #009688;
+        }
+
+        #bootSpaceResult {
+            margin: 0;
+        }
+
+        .suitcase-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        /* Animation for button hover */
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Animation for image hover */
+        .suitcase-image:hover {
+            transform: scale(1.1);
+        }
+
+        /* Animation for output display */
+        #output.show {
+            display: block;
+            border-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Intelligent Boot Space Management</h1>
+
+    <form id="bootSpaceManagementForm">
+        <label for="cargoType"><strong>Car Type:</strong></label>
+        <select id="cargoType" name="cargoType" required>
+            <option value="SUV">XUV-500</option>
+            <option value="TUV">TUV-400</option>
+            <option value="XUV">SUV-400</option>
+            <option value="CUV">CUV-300</option>
+        </select>
+
+        <fieldset>
+            <legend>Luggage Based On Size</legend>
+            <!-- Large suitcase image -->
+            <img class="suitcase-image" src="largesuitcase.jpg" alt="Large Suitcase" height="200" width="200">
+            <label for="Large" style="font-size: small;"> Large Luggage (100 cubic cm)</label>
+            <select id="Large" name="Large">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+
+            <!-- Medium suitcase image -->
+            <img class="suitcase-image" src="C:\Users\kathi\OneDrive\Desktop\Hackathon\Mediumsuitecase.jpg" alt="Medium Suitcase">
+            <label for="Medium" style="font-size: small;"> Medium Luggage (75 cubic cm)</label>
+            <select id="Medium" name="Medium">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+
+            <!-- Small suitcase image -->
+            <img class="suitcase-image" src="smallsuitecase.jpg" alt="Small Suitcase">
+            <label for="Small" style="font-size: small;"> Small Luggage (25 cubic cm)</label>
+            <select id="Small" name="Small">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+
+            <button type="button" onclick="manageBootSpace()">Manage Boot Space</button>
+        </fieldset>
+
+        <div id="output">
+            <h2>Boot Space Summary</h2>
+            <p id="bootSpaceResult"></p>
+        </div>
+    </form>
+
+    <script>
+        function manageBootSpace() {
+            // Get selected values
+            const carType = document.getElementById('cargoType').value;
+            const largeCount = parseInt(document.getElementById('Large').value);
+            const mediumCount = parseInt(document.getElementById('Medium').value);
+            const smallCount = parseInt(document.getElementById('Small').value);
+
+            // Calculate total volume
+            const totalVolume = (largeCount * 100) + (mediumCount * 75) + (smallCount * 25);
+
+            // Get car volume
+            const carVolume = getCarVolume();
+
+            // Calculate remaining space
+            const remainingSpace = carVolume - totalVolume;
+
+            // Display the output
+            const outputDiv = document.getElementById('output');
+            const resultParagraph = document.getElementById('bootSpaceResult');
+
+            if (remainingSpace >= 0) {
+                resultParagraph.innerHTML = `
+                    For ${carType} with ${largeCount} large, ${mediumCount} medium, and ${smallCount} small luggage,
+                    the total boot space occupied is ${totalVolume} cubic cm. Remaining space: ${remainingSpace} cubic cm.
+                `;
+                resultParagraph.style.color = 'black'; // Reset text color
+            } else {
+                resultParagraph.innerHTML = `
+                    For ${carType} with ${largeCount} large, ${mediumCount} medium, and ${smallCount} small luggage,
+                    the total boot space occupied is ${totalVolume} cubic cm. Boot Overflow!
+                `;
+                resultParagraph.style.color = 'red'; // Set text color to red for alert
+                showAlert(); // Show alert for overflow situation
+            }
+
+            outputDiv.classList.add('show'); // Add the 'show' class to display the output
+        }
+
+        function showAlert() {
+            alert("Boot Overflow Alert! Please reorganize your luggage.");
+        }
+
+        function getCarVolume() {
+            // Define car volumes
+            const carVolumes = {
+                'SUV': 500,
+                'TUV': 400,
+                'XUV': 400,
+                'CUV': 300
+            };
+
+            // Get selected car type
+            const selectedCarType = document.getElementById('cargoType').value;
+
+            // Return the volume of the selected car type
+            return carVolumes[selectedCarType];
+        }
+    </script>
+</body>
+</html>
